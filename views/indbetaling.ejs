@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link rel="stylesheet" href="indbetaling.css">
+	<script src="indbetaling.js"></script>
+</head>
+<body>
+	<form action="#" onsubmit="submitName(); return false;">
+		<input id="name" type="text" placeholder="Navn">
+		<input id="klasse" type="text" placeholder="Klasse (fx 8S)"> <button id="videre1">Videre</button>
+	</form>
+	<form action="#" id="newPerson" hidden onsubmit="createPerson(); return false;">
+
+		<input id="password" type="text" placeholder="Password" >
+		<button>Opret person</button>
+	</form>
+	<form action="#" id="newAktie" hidden onsubmit="invest(); return false">
+		<select name="aktie" id="aktie">
+			<% for (var i = 0; i < possibleAktier.length; i++) { %>
+				<option value="<%= possibleAktier[i] %>"><%= possibleAktier[i].replaceAll("_", " ") %></option>
+			<% } %>
+		</select>
+		<input id="amount" type="number" placeholder="Beløb">
+		<button>Køb aktie</button>
+	</form>
+</body>
+</html>

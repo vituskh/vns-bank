@@ -21,7 +21,21 @@ function randomId(length) {
 	return id;
 }
 
+function log(file, message) {
+	return new Promise((resolve, reject) => {
+		fs.appendFile(file, new Date().toISOString().slice(0,19) + ' ' + message + '\n', (err) => {
+			if (err) {
+				reject(err);
+			} else {
+				resolve();
+			}
+		})
+	})
+}
+
+
 module.exports = {
 	setJson,
-	randomId
+	randomId,
+	log
 }

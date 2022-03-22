@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="udbetaling.js"></script>
+	<link rel="stylesheet" href="udbetaling.css">
+	<title>Udbetaling</title>
+</head>
+<body>
+	<form action="#" onsubmit="getAktier(); return false;">
+		<input id="name" type="text" placeholder="Navn">
+		<input id="klasse" type="text" placeholder="Klasse (fx 8S)">
+		<input id="password" type="text" placeholder="Password" >
+		<button>Se & udbetal aktier</button>
+	</form>
+	<br>
+	<table>
+		<thead>
+			<tr>
+				<th>Aktie ID</th>
+				<th>Investeret i</th>
+				<th>Værdi</th>
+				<th>Udbetal</th>
+			</tr>
+		</thead>
+		<tbody id="aktier">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+		</tbody>
+	</table>
+	<button id="luk" onclick="luk()">Ny person</button>
+</body>
+</html>

@@ -1,4 +1,4 @@
-const { Aktie } = require('./classes.js');
+const { Aktie, Person } = require('./classes.js');
 const misc = require('./misc.js');
 var personer = require('./personer.json');
 const bcrypt = require('bcrypt');
@@ -22,7 +22,7 @@ if (require.main === module) {
 				break;
 			case "udbetal":
 				console.log("Udbetal aktie");
-				udbetal(data[1], data[2], data[3], data[4])
+				udbetal(data[1], data[2], data[3],)
 					.then(() => {
 						console.log('Udbetalingen er gennemført');
 					})
@@ -57,9 +57,8 @@ function createPerson(name, klasse, password) {
 		if (personer[name + klasse]) {
 			resolve('Personen eksisterer allerede');
 		} else {
-			personer[name + klasse] = {
-				password: bcrypt.hashSync(password, 10)
-			};
+			let person = new Person(bcrypt.hashSync(password, 10), name, klasse);
+			personer[name + klasse] = person;
 			misc.setJson('./personer.json', personer)
 				.then(() => {
 					resolve("Personen er oprettet");
@@ -71,19 +70,31 @@ function createPerson(name, klasse, password) {
 function personExists(name, klasse) {
 	return personer[name + klasse] !== undefined;
 }
-function checkPass(name,klasse, password) {
+function checkPass(name, klasse, password) {
+	name = name || '';
+	klasse = klasse || '';
+	password = password || '';
+
+
 	name = name.trim().toLowerCase();
 	klasse = klasse.trim().toLowerCase().replaceAll('.', '');
 	password = password.trim();
 	return new Promise((resolve, reject) => {
 		if (personExists(name, klasse)) {
-			if (bcrypt.compareSync(password, personer[name + klasse].password)) {
-				resolve();
-			} else {
-				reject();
-			}
+			bcrypt.compare(password, personer[name + klasse].password)
+				.then((res) => {
+					if (res) {
+						resolve(true);
+					}
+					else {
+						resolve(false);
+					}
+				})
+				.catch((err) => {
+					reject(err);
+				})
 		} else {
-			reject();
+			reject("Personen eksisterer ikke");
 		}
 	})
 }
@@ -95,8 +106,8 @@ function checkPass(name,klasse, password) {
  * @param {String} investedIn 
  * @returns 
  */
-function fixParams(name,klasse,investedIn) {
-	
+function fixParams(name, klasse, investedIn) {
+
 	name = name.trim();
 	klasse = klasse.trim();
 	investedIn = investedIn.trim();
@@ -104,7 +115,7 @@ function fixParams(name,klasse,investedIn) {
 	name = name.toLowerCase();
 	klasse = klasse.toLowerCase().replaceAll('.', '')
 	investedIn = investedIn.toLowerCase().replaceAll(' ', '_');
-	
+
 	return {
 		name,
 		klasse,
@@ -113,21 +124,25 @@ function fixParams(name,klasse,investedIn) {
 }
 
 function indtast(name, klasse, investedIn, amount) {
-	
-	({name, klasse, investedIn} = fixParams(name,klasse,investedIn));
 
+	({ name, klasse, investedIn } = fixParams(name, klasse, investedIn));
+	console.log(name, klasse, investedIn, amount);
 	return new Promise((resolve, reject) => {
 		if (personExists(name, klasse)) {
 			let aktieId
 			do {
 				aktieId = misc.randomId(6);
-			} while (personer[name+klasse][aktieId]);
+			} while (personer[name + klasse].aktier[aktieId]);
 			let aktie = new Aktie(investedIn, amount, aktieId);
-			personer[name + klasse][aktieId] = aktie;
+			personer[name + klasse].aktier[aktieId] = aktie;
 
 			misc.setJson('./personer.json', personer)
 				.then(() => {
 					resolve();
+				})
+				.catch((err) => {
+					console.warn(err);
+					reject(err);
 				})
 		} else {
 			reject('Personen eksisterer ikke');
@@ -136,28 +151,39 @@ function indtast(name, klasse, investedIn, amount) {
 	})
 }
 
-function udbetal(name, klasse, password, id) {
+function udbetal(name, klasse, id) {
 	return new Promise((resolve, reject) => {
 		if (personExists(name, klasse)) {
-			if (personer[name + klasse].hasOwnProperty(id)) {
-				if (bcrypt.compareSync(password, personer[name + klasse].password)) {
-					let worth = personer[name + klasse][id].amount;
-					delete personer[name + klasse][id]
-					misc.setJson('./personer.json', personer)
-						.then(() => {
-							resolve('Aktien er udbetalt, værdien er ' + worth);
-						})
-				} else {
-					reject('Forkert kodeord')
-				}
+			if (personer[name + klasse].aktier.hasOwnProperty(id)) {
+				let worth = personer[name + klasse].aktier[id].amount;
+				delete personer[name + klasse].aktier[id]
+				console.log(JSON.stringify(personer[name + klasse].aktier));
+				misc.setJson('./personer.json', personer)
+					.then(() => {
+						resolve('Aktien er udbetalt, værdien er ' + worth);
+					})
 			} else {
 				reject('Aktien eksisterer ikke')
 			}
 		} else {
 			reject('Personen eksisterer ikke')
 		}
+
 	})
-		
+}
+
+function getAktier(name, klasse) {
+	return new Promise((resolve, reject) => {
+		if (personExists(name, klasse)) {
+			let aktier = [];
+			for (let key in personer[name + klasse].aktier) {
+				aktier.push(personer[name + klasse].aktier[key]);
+			}
+			resolve(aktier);
+		} else {
+			reject('Personen eksisterer ikke');
+		}
+	})
 }
 
 
@@ -166,5 +192,6 @@ module.exports = {
 	udbetal,
 	createPerson,
 	personExists,
-	checkPass
+	checkPass,
+	getAktier
 }

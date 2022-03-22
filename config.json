@@ -1,21 +1,22 @@
 {
 	"port": "8080",
+	"secret": "YOUR_SECRET_KEY",
 	"aktier": [
-		"Bogcafe",
-		"Casino",
-		"Dansecamp",
-		"Genbrugsbutik",
-		"Gyserhus",
-		"Kulturhus",
-		"Madbod",
-		"Mediehus",
-		"Museum",
-		"Perlebutik",
-		"Portrætbutik",
-		"Rådhus",
-		"Sportsbar",
-		"Biograf",
-		"VNS_Got_Talent",
-		"VNS_United"
+		"bogcafe",
+		"casino",
+		"dansecamp",
+		"genbrugsbutik",
+		"gyserhus",
+		"kulturhus",
+		"madbod",
+		"mediehus",
+		"museum",
+		"perlebutik",
+		"portrætbutik",
+		"rådhus",
+		"sportsbar",
+		"biograf",
+		"vns_got_talent",
+		"vns_united"
 	]
 }

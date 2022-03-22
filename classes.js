@@ -13,14 +13,12 @@ class Aktie {
 }
 
 class Person {
-	constructor (name, klasse, password) {
-		this.name = name;
-		this.klasse = klasse;
+	constructor (password) {
 		this.password = password;
+		this.aktier = {};
 	}
-	aktier = [];
 }
 
 module.exports = {
-	Aktie
+	Aktie, Person
 }
