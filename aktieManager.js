@@ -54,6 +54,9 @@ if (require.main === module) {
 }
 function createPerson(name, klasse, password) {
 	return new Promise((resolve, reject) => {
+		name = name.trim().toLowerCase()
+		klasse = klasse.trim().toLowerCase().replace(/\./g, '');
+		password = password.trim();
 		if (personer[name + klasse]) {
 			resolve('Personen eksisterer allerede');
 		} else {
