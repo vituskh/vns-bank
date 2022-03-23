@@ -72,6 +72,6 @@ function invest() {
 		&klasse=${klasse}
 		&aktie=${document.getElementById('aktie').value}
 		&antal=${document.getElementById('amount').value}
-	`.replaceAll("\t", "").replaceAll("\n",""), true);
+	`.replace(/\t/g, "").replace(/\n/g,""), true);
 	xhttp.send()
 }

@@ -77,7 +77,7 @@ function checkPass(name, klasse, password) {
 
 
 	name = name.trim().toLowerCase();
-	klasse = klasse.trim().toLowerCase().replaceAll('.', '');
+	klasse = klasse.trim().toLowerCase().replace(/\./g, '');
 	password = password.trim();
 	return new Promise((resolve, reject) => {
 		if (personExists(name, klasse)) {
@@ -113,8 +113,8 @@ function fixParams(name, klasse, investedIn) {
 	investedIn = investedIn.trim();
 
 	name = name.toLowerCase();
-	klasse = klasse.toLowerCase().replaceAll('.', '')
-	investedIn = investedIn.toLowerCase().replaceAll(' ', '_');
+	klasse = klasse.toLowerCase().replace(/\./g, '');
+	investedIn = investedIn.toLowerCase().replace(/_/g, '');
 
 	return {
 		name,
