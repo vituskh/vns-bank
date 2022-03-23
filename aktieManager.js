@@ -1,6 +1,6 @@
 const { Aktie, Person } = require('./classes.js');
 const misc = require('./misc.js');
-var personer = require('./personer.json');
+var personer = require('./data/personer.json');
 const bcrypt = require('bcrypt');
 
 //If not running as a module
@@ -63,7 +63,7 @@ function createPerson(name, klasse, password) {
 			misc.log('Opretter person ' + name + klasse);
 			let person = new Person(bcrypt.hashSync(password, 10), name, klasse);
 			personer[name + klasse] = person;
-			misc.setJson('./personer.json', personer)
+			misc.setJson('./data/personer.json', personer)
 				.then(() => {
 					resolve("Personen er oprettet");
 				})
@@ -140,7 +140,7 @@ function indtast(name, klasse, investedIn, amount) {
 			let aktie = new Aktie(investedIn, amount, aktieId);
 			personer[name + klasse].aktier[aktieId] = aktie;
 
-			misc.setJson('./personer.json', personer)
+			misc.setJson('./data/personer.json', personer)
 				.then(() => {
 					misc.log('Aktie lavet: ' + JSON.stringify(aktie) + ' for ' + name + klasse);
 					resolve();
@@ -164,7 +164,7 @@ function udbetal(name, klasse, id) {
 				let aktie = JSON.stringify(personer[name + klasse].aktier[id]);
 				delete personer[name + klasse].aktier[id]
 				console.log(JSON.stringify(personer[name + klasse].aktier));
-				misc.setJson('./personer.json', personer)
+				misc.setJson('./data/personer.json', personer)
 					.then(() => {
 						misc.log('Aktie udbetalt: ' + aktie + ' for ' + name + klasse);
 						resolve('Aktien er udbetalt, værdien er ' + worth);

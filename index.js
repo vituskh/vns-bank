@@ -1,3 +1,25 @@
+//Make sure /data/personer.json, /data/staff.json and /data/aktier.log exists
+{
+	const fs = require('fs');
+	
+	if (!fs.existsSync('./data')) {
+		fs.mkdirSync('./data');
+	}
+	if (!fs.existsSync('./data/personer.json')) {
+		fs.writeFileSync('./data/personer.json', '{}');
+	}
+	if (!fs.existsSync('./data/staff.json')) {
+		fs.writeFileSync('./data/staff.json', '{}');
+	}
+	if (!fs.existsSync('./data/aktier.log')) {
+		fs.writeFileSync('./data/aktier.log', '');
+	}
+	
+
+}
+
+
+
 const express = require('express');
 const app = express();
 const config = require('./config.json');
@@ -5,7 +27,7 @@ const cookieParser = require('cookie-parser');
 const misc = require('./misc.js');
 const bcrypt = require('bcrypt');
 
-var staff = require('./staff.json');
+var staff = require('./data/staff.json');
 
 const aktieManager = require('./aktieManager.js');
 

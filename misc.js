@@ -23,7 +23,7 @@ function randomId(length) {
 
 function log(message) {
 	return new Promise((resolve, reject) => {
-		fs.appendFile("./aktier.log", new Date().toLocaleString("da-DK") + ' ' + message + '\n', (err) => {
+		fs.appendFile("./data/aktier.log", new Date().toLocaleString("da-DK") + ' ' + message + '\n', (err) => {
 			if (err) {
 				reject(err);
 			} else {
