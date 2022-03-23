@@ -72,6 +72,8 @@ function createPerson(name, klasse, password) {
 }
 
 function personExists(name, klasse) {
+	name = name.trim().toLowerCase();
+	klasse = klasse.trim().toLowerCase().replace(/\./g, '');
 	return personer[name + klasse] !== undefined;
 }
 function checkPass(name, klasse, password) {
@@ -103,33 +105,14 @@ function checkPass(name, klasse, password) {
 	})
 }
 
-/**
- * 
- * @param {String} name 
- * @param {String} klasse 
- * @param {String} investedIn 
- * @returns 
- */
-function fixParams(name, klasse, investedIn) {
+
+function indtast(name, klasse, investedIn, amount) {
 
 	name = name.trim();
 	klasse = klasse.trim();
 	investedIn = investedIn.trim();
+	amount = amount.trim();
 
-	name = name.toLowerCase();
-	klasse = klasse.toLowerCase().replace(/\./g, '');
-	investedIn = investedIn.toLowerCase().replace(/_/g, '');
-
-	return {
-		name,
-		klasse,
-		investedIn
-	}
-}
-
-function indtast(name, klasse, investedIn, amount) {
-
-	({ name, klasse, investedIn } = fixParams(name, klasse, investedIn));
 	console.log(name, klasse, investedIn, amount);
 	return new Promise((resolve, reject) => {
 		if (personExists(name, klasse)) {
@@ -158,6 +141,8 @@ function indtast(name, klasse, investedIn, amount) {
 
 function udbetal(name, klasse, id) {
 	return new Promise((resolve, reject) => {
+		name = name.trim().toLowerCase();
+		klasse = klasse.trim().toLowerCase().replace(/\./g, '');
 		if (personExists(name, klasse)) {
 			if (personer[name + klasse].aktier.hasOwnProperty(id)) {
 				let worth = personer[name + klasse].aktier[id].amount;
@@ -181,6 +166,8 @@ function udbetal(name, klasse, id) {
 
 function getAktier(name, klasse) {
 	return new Promise((resolve, reject) => {
+		name = name.trim().toLowerCase();
+		klasse = klasse.trim().toLowerCase().replace(/\./g, '');
 		if (personExists(name, klasse)) {
 			let aktier = [];
 			for (let key in personer[name + klasse].aktier) {
