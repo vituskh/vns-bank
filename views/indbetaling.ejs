@@ -21,7 +21,7 @@
 	<form action="#" id="newAktie" hidden onsubmit="invest(); return false">
 		<select name="aktie" id="aktie">
 			<% for (var i = 0; i < possibleAktier.length; i++) { %>
-				<option value="<%= possibleAktier[i] %>"><%= possibleAktier[i].replaceAll("_", " ") %></option>
+				<option value="<%= possibleAktier[i] %>"><%= possibleAktier[i].replace(/_/g, " ") %></option>
 			<% } %>
 		</select>
 		<input id="amount" type="number" placeholder="Beløb">
