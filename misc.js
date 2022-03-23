@@ -21,9 +21,9 @@ function randomId(length) {
 	return id;
 }
 
-function log(file, message) {
+function log(message) {
 	return new Promise((resolve, reject) => {
-		fs.appendFile(file, new Date().toISOString().slice(0,19) + ' ' + message + '\n', (err) => {
+		fs.appendFile("./aktier.log", new Date().toLocaleString("da-DK") + ' ' + message + '\n', (err) => {
 			if (err) {
 				reject(err);
 			} else {

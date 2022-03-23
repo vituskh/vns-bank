@@ -57,6 +57,7 @@ function createPerson(name, klasse, password) {
 		if (personer[name + klasse]) {
 			resolve('Personen eksisterer allerede');
 		} else {
+			misc.log('Opretter person ' + name + klasse);
 			let person = new Person(bcrypt.hashSync(password, 10), name, klasse);
 			personer[name + klasse] = person;
 			misc.setJson('./personer.json', personer)
@@ -138,6 +139,7 @@ function indtast(name, klasse, investedIn, amount) {
 
 			misc.setJson('./personer.json', personer)
 				.then(() => {
+					misc.log('Aktie lavet: ' + JSON.stringify(aktie) + ' for ' + name + klasse);
 					resolve();
 				})
 				.catch((err) => {
@@ -156,10 +158,12 @@ function udbetal(name, klasse, id) {
 		if (personExists(name, klasse)) {
 			if (personer[name + klasse].aktier.hasOwnProperty(id)) {
 				let worth = personer[name + klasse].aktier[id].amount;
+				let aktie = JSON.stringify(personer[name + klasse].aktier[id]);
 				delete personer[name + klasse].aktier[id]
 				console.log(JSON.stringify(personer[name + klasse].aktier));
 				misc.setJson('./personer.json', personer)
 					.then(() => {
+						misc.log('Aktie udbetalt: ' + aktie + ' for ' + name + klasse);
 						resolve('Aktien er udbetalt, værdien er ' + worth);
 					})
 			} else {
