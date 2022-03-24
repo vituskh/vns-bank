@@ -2,7 +2,7 @@ const { Aktie, Person } = require('./classes.js');
 const misc = require('./misc.js');
 var personer = require('./data/personer.json');
 const bcrypt = require('bcrypt');
-
+let config = require('./config.json');
 
 function createPerson(name, klasse, password) {
 	return new Promise((resolve, reject) => {
@@ -194,8 +194,33 @@ process.stdin.on('data', (data) => {
 			} else {
 				console.log('Personen eksisterer ikke');
 			}
-
-
+		case "double":
+			console.log("Double");
+			if (config.aktier.includes(data[1])) {
+				for (const key in personer) {
+					if (Object.hasOwnProperty.call(personer, key)) {
+						const p = personer[key];
+						for (const k2 in p.aktier) {
+							if (Object.hasOwnProperty.call(p.aktier, k2)) {
+								const aktie = p.aktier[k2];
+								console.log(JSON.stringify(aktie));
+								if (aktie.investedIn == data[1]) {
+									console.log("double");
+									aktie.amount *= 2;
+								}
+							}
+						}
+					}
+				}
+			}
+			misc.setJson('./data/personer.json', personer)
+				.then(() => {
+					console.log('Double gennemført');
+				})
+				.catch((err) => {
+					console.log(err);
+				})
+				
 
 		default:
 			break;
