@@ -194,6 +194,7 @@ process.stdin.on('data', (data) => {
 			} else {
 				console.log('Personen eksisterer ikke');
 			}
+			break;
 		case "double":
 			console.log("Double");
 			if (config.aktier.includes(data[1])) {
@@ -220,6 +221,17 @@ process.stdin.on('data', (data) => {
 				.catch((err) => {
 					console.log(err);
 				})
+			break;
+		case "checkPass":
+			console.log("Check password");
+			checkPass(data[1], data[2])
+				.then((res) => {
+					console.log(res);
+				})
+				.catch((err) => {
+					console.log(err);
+				})
+			break;
 				
 
 		default:
