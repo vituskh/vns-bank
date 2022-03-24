@@ -146,7 +146,6 @@ app.get('/getAktier', (req, res) => {
 	let auth = req.headers.authorization.split(" ")[1] || ":"
 	auth = Buffer.from(auth, 'base64').toString('ascii').split(':')
 	let password = auth[1] || "";
-	console.log(password)
 	if (!checkSession(req.signedCookies.sessionKey).staff) {
 		res.sendStatus(403);
 		return
