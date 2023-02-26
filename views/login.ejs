@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Login</title>
+	</head>
+	<body>
+		<p style="color: red" id="errorMessage"></p>
+		<form action="#" onsubmit="login()">
+			<input
+				type="text"
+				name="username"
+				id="username"
+				placeholder="Brugernavn"
+			/>
+			<input
+				type="password"
+				name="pass"
+				id="password"
+				placeholder="Adgangskode"
+			/>
+			<input type="submit" value="Log ind" />
+		</form>
+		<script>
+			function login() {
+				const username = document.getElementById("username");
+				const password = document.getElementById("password");
+
+				username.disabled = true;
+				password.disabled = true;
+
+				fetch("/login", {
+					method: "POST",
+					body: JSON.stringify({
+						username: username.value,
+						password: password.value,
+					}),
+					headers: {
+						"Content-Type": "application/json",
+					},
+				})
+					.then((response) => {
+						if (response.status === 200) {
+							window.location.href = "/";
+						} else {
+							const error = document.getElementById("errorMessage");
+							error.innerText = "Forkert brugernavn eller adgangskode";
+							username.disabled = false;
+							password.disabled = false;
+						}
+					})
+					.catch((error) => {
+						console.error("Error:", error);
+					});
+			}
+		</script>
+	</body>
+</html>
