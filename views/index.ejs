@@ -10,7 +10,13 @@
 		<h1>Velkommen til VNS Bank.</h1>
 
 		<p>Du er logget ind som <%= username %></p>
-		<button onclick="logout()">Log ud her</button>
+		<button onclick="logout()">Log ud her</button><br /><br />
+
+		<div>
+			<% if (admin) { %>
+			<a href="/admin">Admin panel</a>
+			<% } %>
+		</div>
 
 		<script>
 			function logout() {

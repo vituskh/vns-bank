@@ -1,5 +1,5 @@
 "use strict";
-import { Models } from "./fileManager.js";
+import fileManager, { Models } from "./fileManager.js";
 import passwordManager from "./passwordManager.js";
 //import "./cli.js";
 
@@ -34,6 +34,55 @@ app.use(
 	})
 );
 
+{
+	app.get("/admin", async (req, res) => {
+		if (req.session.username && req.session.admin) {
+			let users = await Models.User.find({});
+			let staff = await Models.Staff.find({});
+			res.render("admin", {
+				users: users,
+				staff: staff,
+			});
+		} else {
+			res.redirect("/");
+		}
+	});
+
+	app.post("/admin/staff", async (req, res) => {
+		if (req.session.username && req.session.admin) {
+			let username = passwordManager.sanitizeUsername(req.body.username || "");
+
+			if (!username) {
+				res.status(400).send({ success: false, message: "Missing field" });
+				return;
+			}
+
+			let result = await fileManager.createStaff(username);
+			if (result.success) {
+				res.status(200).send({ success: true });
+				return;
+			}
+
+			res.status(400).send({ success: false, message: result.message });
+		} else {
+			res.sendStatus(403);
+		}
+	});
+
+	app.delete("/admin/staff", async (req, res) => {
+		if (req.session.username && req.session.admin) {
+			let result = await fileManager.deleteStaff(req.body.username);
+
+			if (result.success) {
+				res.status(200).send({ success: true });
+				return;
+			}
+			res.status(400).send({ success: false, message: result.message });
+		}
+		res.sendStatus(403);
+	});
+}
+
 app.get("/", (req, res) => {
 	if (req.session.username) {
 		res.render("index", {
@@ -46,8 +95,9 @@ app.get("/", (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-	let username = req.body.username;
+	let username = passwordManager.sanitizeUsername(req.body.username || "");
 	let password = req.body.password;
+	console.log(username, password, req.body);
 	if (!username || !password) {
 		res.status(400).send({ success: false, message: "Missing fields" });
 		return;

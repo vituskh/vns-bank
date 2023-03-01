@@ -22,7 +22,7 @@ export async function comparePassword(password, hash) {
 	return await compare(password, hash);
 }
 
-export async function sanitizeUsername(username) {
+export function sanitizeUsername(username) {
 	//trim whitespace
 	username = username.trim();
 	username = username.toLowerCase();
@@ -46,21 +46,29 @@ export async function checkPassword(username, password) {
 
 export async function checkPasswordStaff(username, password) {
 	if (!(await fileManager.Models.Staff.exists({ username: username }))) {
-		return { success: false, message: "Wrong password or username" };
+		return {
+			success: false,
+			message: "Wrong password or username",
+			admin: false,
+		};
 	}
 
 	let staff = await fileManager.Models.Staff.findOne({ username: username });
-	if (staff.password === null) {
+	if (staff.password === "") {
 		staff.password = await hashPassword(password);
 		staff.save();
-		return { success: true };
+		return { success: true, admin: staff.admin || false };
 	}
 
 	if (!(await comparePassword(password, staff.password))) {
-		return { success: false, message: "Wrong password or username" };
+		return {
+			success: false,
+			message: "Wrong password or username",
+			admin: false,
+		};
 	}
 
-	return { success: true };
+	return { success: true, admin: staff.admin || false };
 }
 
 export default {

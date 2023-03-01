@@ -10,18 +10,67 @@
 		<h1>Admin panel</h1>
 		<div>
 			<h2>Staff registered</h2>
-			<ul>
+			<ul id="staffs">
 				<% staff.forEach((staff) => { %>
 					<li>
-						<%= staff.username %>
+						<span><%= staff.username %></span> <button onclick="deleteStaff(this)">Slet</button>
 					</li>
 				<% }); %>
 		</div>
 
 		<h2>Register staff</h2>
-		<form action="#">
-			<label for="staffRegisterName"></label><input id="staffRegisterName" type="text">
-			<label for="staffRegisterPassword"></label><input id="staffRegisterPassword" type="password">
+		<form action="#" onsubmit="createStaff(event, this); false">
+			<label for="staffRegisterName">Navn: </label><input id="staffRegisterName" type="text">
 		</form>
+
+		<script>
+			function createStaff(e, form) {
+				e.preventDefault();
+				const username = form.staffRegisterName.value;
+				fetch('/admin/staff', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ username })
+				})
+					.then((res) => res.json())
+					.then((data) => {
+						if (!data.success) {
+							alert(data.message);
+							return;
+						}
+						console.log(data);
+						const li = document.createElement('li');
+						li.innerHTML = `<span>${username}</span> <button onclick="deleteStaff(this)">Slet</button>`;
+						document.getElementById('staffs').appendChild(li);
+
+						form.staffRegisterName.value = '';
+					});
+				return false;
+			}
+			function deleteStaff(element) {
+				const username = element.previousElementSibling.innerText;
+				fetch(`/admin/staff/`, {
+					method: 'DELETE',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ username })
+				})
+					.then((res) => res.json())
+					.then((data) => {
+						if (!data.success) {
+							alert(data.message);
+							return;
+						}
+						console.log(data);
+
+						element.parentElement.remove();
+					});
+			}
+		</script>
+	
+
 	</body>
 </html>

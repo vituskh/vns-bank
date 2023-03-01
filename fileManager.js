@@ -2,23 +2,26 @@
 import { config } from "dotenv";
 config();
 import { hashPassword } from "./passwordManager.js";
-import { connect, Schema, model } from "mongoose";
-await connect(process.env.dbURI || "mongodb://127.0.0.1:27017/vns-bank");
+import mongoose from "mongoose";
+mongoose.set("strictQuery", false);
+await mongoose.connect(
+	process.env.dbURI || "mongodb://127.0.0.1:27017/vns-bank"
+);
 
-const userSchema = new Schema({
+const userSchema = new mongoose.Schema({
 	username: String,
 	password: String,
 	aktier: [{ investedIn: String, amount: Number }],
 });
-const User = model("User", userSchema);
+const User = mongoose.model("User", userSchema);
 
-const staffSchema = new Schema({
+const staffSchema = new mongoose.Schema({
 	username: String,
-	password: String || null,
-	admin: Boolean,
+	password: { type: String, default: "" },
+	admin: { type: Boolean, default: false },
 });
 
-const Staff = model("Staff", staffSchema);
+const Staff = mongoose.model("Staff", staffSchema);
 
 async function createUser(username, password) {
 	if (await Staff.exists({ username: username })) {
@@ -41,10 +44,17 @@ async function createStaff(username) {
 
 	let staff = new Staff({
 		username: username,
-		password: null,
-		admin: false,
 	});
 	await staff.save();
+	return { success: true };
+}
+
+async function deleteStaff(username) {
+	if (!(await Staff.exists({ username: username }))) {
+		return { success: false, message: "Staff does not exist" };
+	}
+
+	await Staff.deleteOne({ username: username });
 	return { success: true };
 }
 
@@ -97,4 +107,11 @@ export let Models = {
 	User,
 	Staff,
 };
-export default { createUser, createStaff, addAktie, removeAktie, Models };
+export default {
+	deleteStaff,
+	createUser,
+	createStaff,
+	addAktie,
+	removeAktie,
+	Models,
+};
