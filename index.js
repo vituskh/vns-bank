@@ -1,5 +1,5 @@
 "use strict";
-import fileManager, { Models } from "./fileManager.js";
+import dbManager, { models } from "./dbManager.js";
 import passwordManager from "./passwordManager.js";
 //import "./cli.js";
 
@@ -37,8 +37,8 @@ app.use(
 {
 	app.get("/admin", async (req, res) => {
 		if (req.session.username && req.session.admin) {
-			let users = await Models.User.find({});
-			let staff = await Models.Staff.find({});
+			let users = await models.User.find({});
+			let staff = await models.Staff.find({});
 			res.render("admin", {
 				users: users,
 				staff: staff,
@@ -57,7 +57,7 @@ app.use(
 				return;
 			}
 
-			let result = await fileManager.createStaff(username);
+			let result = await dbManager.methods.staff.create(username);
 			if (result.success) {
 				res.status(200).send({ success: true });
 				return;
@@ -71,7 +71,7 @@ app.use(
 
 	app.delete("/admin/staff", async (req, res) => {
 		if (req.session.username && req.session.admin) {
-			let result = await fileManager.deleteStaff(req.body.username);
+			let result = await dbManager.methods.staff.delete(req.body.username);
 
 			if (result.success) {
 				res.status(200).send({ success: true });

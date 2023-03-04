@@ -1,12 +1,5 @@
-"use strict";
-import { config } from "dotenv";
-config();
-import { hashPassword } from "./passwordManager.js";
 import mongoose from "mongoose";
-mongoose.set("strictQuery", false);
-await mongoose.connect(
-	process.env.dbURI || "mongodb://127.0.0.1:27017/vns-bank"
-);
+import { hashPassword } from "../passwordManager.js";
 
 const userSchema = new mongoose.Schema({
 	username: String,
@@ -15,15 +8,7 @@ const userSchema = new mongoose.Schema({
 });
 const User = mongoose.model("User", userSchema);
 
-const staffSchema = new mongoose.Schema({
-	username: String,
-	password: { type: String, default: "" },
-	admin: { type: Boolean, default: false },
-});
-
-const Staff = mongoose.model("Staff", staffSchema);
-
-async function createUser(username, password) {
+async function create(username, password) {
 	if (await Staff.exists({ username: username })) {
 		return { sucess: false, message: "User already exists" };
 	}
@@ -34,27 +19,6 @@ async function createUser(username, password) {
 		aktier: [],
 	});
 	await user.save();
-	return { success: true };
-}
-
-async function createStaff(username) {
-	if (await Staff.exists({ username: username })) {
-		return { success: false, message: "Staff already exists" };
-	}
-
-	let staff = new Staff({
-		username: username,
-	});
-	await staff.save();
-	return { success: true };
-}
-
-async function deleteStaff(username) {
-	if (!(await Staff.exists({ username: username }))) {
-		return { success: false, message: "Staff does not exist" };
-	}
-
-	await Staff.deleteOne({ username: username });
 	return { success: true };
 }
 
@@ -103,15 +67,4 @@ async function removeAktie(username, investedIn, amount) {
 	};
 }
 
-export let Models = {
-	User,
-	Staff,
-};
-export default {
-	deleteStaff,
-	createUser,
-	createStaff,
-	addAktie,
-	removeAktie,
-	Models,
-};
+export default { User, create, addAktie, removeAktie };

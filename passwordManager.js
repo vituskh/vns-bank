@@ -1,5 +1,5 @@
 import { hashSync, hash as _hash, compare } from "bcrypt";
-import fileManager from "./fileManager.js";
+import dbManager from "./dbManager.js";
 // Calculate salt rounds for 200ms hashing
 export let saltRounds = 10;
 {
@@ -31,11 +31,11 @@ export function sanitizeUsername(username) {
 }
 
 export async function checkPassword(username, password) {
-	if (!(await fileManager.Models.User.exists({ username: username }))) {
+	if (!(await dbManager.models.User.exists({ username: username }))) {
 		return { success: false, message: "Wrong password or username" };
 	}
 
-	let user = await fileManager.Models.User.findOne({ username: username });
+	let user = await dbManager.models.User.findOne({ username: username });
 
 	if (!(await comparePassword(password, user.password))) {
 		return { success: false, message: "Wrong password or username" };
@@ -45,7 +45,7 @@ export async function checkPassword(username, password) {
 }
 
 export async function checkPasswordStaff(username, password) {
-	if (!(await fileManager.Models.Staff.exists({ username: username }))) {
+	if (!(await dbManager.models.Staff.exists({ username: username }))) {
 		return {
 			success: false,
 			message: "Wrong password or username",
@@ -53,7 +53,7 @@ export async function checkPasswordStaff(username, password) {
 		};
 	}
 
-	let staff = await fileManager.Models.Staff.findOne({ username: username });
+	let staff = await dbManager.models.Staff.findOne({ username: username });
 	if (staff.password === "") {
 		staff.password = await hashPassword(password);
 		staff.save();
