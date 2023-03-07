@@ -1,0 +1,53 @@
+body {
+	margin: 40px auto;
+	max-width: 650px;
+	line-height: 1.6;
+	font-size: 18px;
+	color: #444;
+	padding: 0 10px;
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 20px;
+	background-color: white;
+	border: 1px solid #ddd;
+	padding: 20px;
+}
+
+input[type="text"],
+input[type="password"],
+select {
+	padding: 10px;
+	margin-bottom: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+input[type="text"]:disabled,
+input[type="password"]:disabled,
+select:disabled {
+	background-color: #cccccc;
+	color: #999999;
+	cursor: not-allowed;
+}
+
+input[type="submit"],
+button {
+	padding: 10px;
+	background-color: #4caf50;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+input[type="submit"]:hover {
+	background-color: #3e8e41;
+}
+
+input[type="submit"]:disabled,
+button:disabled {
+	background-color: #cccccc;
+	color: #999999;
+	cursor: not-allowed;
+}
