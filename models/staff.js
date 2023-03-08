@@ -12,6 +12,9 @@ async function create(username) {
 	if (await Staff.exists({ username: username })) {
 		return { success: false, message: "Staff already exists" };
 	}
+	if (!username) {
+		return { success: false, message: "Username cannot be empty" };
+	}
 
 	let staff = new Staff({
 		username: username,
@@ -25,8 +28,11 @@ async function deleteStaff(username) {
 		return { success: false, message: "Staff does not exist" };
 	}
 
-	await Staff.deleteOne({ username: username });
-	return { success: true };
+	let result = await Staff.deleteOne({ username: username });
+	if (result.deletedCount === 1) {
+		return { success: true };
+	}
+	return { success: false, message: "Unknown error" };
 }
 
 export default { Staff, create, delete: deleteStaff };

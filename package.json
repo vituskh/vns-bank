@@ -3,9 +3,6 @@
 	"version": "2.0.0",
 	"description": "",
 	"main": "index.js",
-	"scripts": {
-		"test": "test"
-	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/vituskh/vns-bank.git"
@@ -25,8 +22,13 @@
 		"express-session": "^1.17.3",
 		"mongoose": "^6.10.0"
 	},
+	"type": "module",
 	"devDependencies": {
-		"jest": "^29.4.3"
+		"chai": "^4.3.7",
+		"mocha": "^10.2.0",
+		"mongodb-memory-server": "^8.11.5"
 	},
-  "type": "module"
+	"scripts": {
+		"test": "mocha --exit"
+	}
 }
