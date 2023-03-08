@@ -35,4 +35,30 @@ async function deleteStaff(username) {
 	return { success: false, message: "Unknown error" };
 }
 
-export default { Staff, create, delete: deleteStaff };
+async function checkPassword(username, password) {
+	if (!(await dbManager.models.Staff.exists({ username: username }))) {
+		return {
+			success: false,
+			message: "Wrong password or username",
+			admin: false,
+		};
+	}
+
+	let staff = await dbManager.models.Staff.findOne({ username: username });
+	if (staff.password === "") {
+		staff.password = await hashPassword(password);
+		staff.save();
+		return { success: true, admin: staff.admin || false };
+	}
+
+	if (!(await comparePassword(password, staff.password))) {
+		return {
+			success: false,
+			message: "Wrong password or username",
+			admin: false,
+		};
+	}
+
+	return { success: true, admin: staff.admin || false };
+}
+export default { Staff, create, delete: deleteStaff, checkPassword };

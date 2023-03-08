@@ -67,4 +67,18 @@ async function removeAktie(username, investedIn, amount) {
 	};
 }
 
-export default { User, create, addAktie, removeAktie };
+async function checkPassword(username, password) {
+	if (!(await dbManager.models.User.exists({ username: username }))) {
+		return { success: false, message: "Wrong password or username" };
+	}
+
+	let user = await dbManager.models.User.findOne({ username: username });
+
+	if (!(await comparePassword(password, user.password))) {
+		return { success: false, message: "Wrong password or username" };
+	}
+
+	return { success: true };
+}
+
+export default { User, create, addAktie, removeAktie, checkPassword };

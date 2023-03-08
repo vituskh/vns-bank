@@ -1,10 +1,9 @@
 "use strict";
-import { config } from "dotenv";
-config();
+import config from "./environment.js";
 import { hashPassword } from "./passwordManager.js";
 import mongoose from "mongoose";
 mongoose.set("strictQuery", false);
-await mongoose.connect(process.env.dbURI);
+await mongoose.connect(config.dbURI);
 
 import staff from "./models/staff.js";
 import user from "./models/user.js";

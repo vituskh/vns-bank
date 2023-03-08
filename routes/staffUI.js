@@ -1,6 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import passwordManager from "../passwordManager.js";
+import staff from "../models/staff.js";
 
 router.get("/", (req, res) => {
 	if (req.session.username) {
@@ -22,7 +23,7 @@ router.post("/login", async (req, res) => {
 		return;
 	}
 
-	let result = await passwordManager.checkPasswordStaff(username, password);
+	let result = await staff.checkPassword(username, password);
 	if (result.success) {
 		req.session.username = username;
 		req.session.admin = result.admin;
