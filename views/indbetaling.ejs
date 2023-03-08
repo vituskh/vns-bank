@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link rel="stylesheet" href="indbetaling.css" />
+		<script src="indbetaling.js"></script>
+	</head>
+	<body>
+		<button onclick="resetMenu()">Ny bruger</button>
+		<form
+			id="makeUser"
+			action="#"
+			onsubmit="makeUser(event,this)"
+			autocomplete="off"
+		>
+			<label for="username">Brugernavn:</label>
+			<input name="username" type="text" />
+			<div hidden id="passwordDiv">
+				<p>
+					Eleven har ikke oprettet en konto endnu. Indtast nyt password her:
+				</p>
+				<label for="password">Password:</label>
+				<input autocomplete="new-password" name="password" type="password" />
+				<label for="makeSure">Gentag password:</label>
+				<input autocomplete="new-password" type="password" name="makeSure" />
+			</div>
+			<input name="submitButton" type="submit" value="Submit" />
+		</form>
+		<form
+			action="#"
+			id="makeAktie"
+			autocomplete="off"
+			style="display: none"
+			onsubmit="makeAktie(event, this)"
+		>
+			<label for="aktie">Vælg aktie:</label>
+			<select name="aktieType">
+				<% aktieTyper.forEach((aktie) => { %>
+				<option value="<%= aktie.id %>"><%= aktie.navn %></option>
+				<% }); %>
+			</select>
+			<label for="amount">Antal:</label>
+			<input type="number" name="amount" required step="1" min="0" max="100" />
+			<input name="submit" type="submit" value="Submit" />
+		</form>
+	</body>
+</html>
