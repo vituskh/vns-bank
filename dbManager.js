@@ -4,9 +4,7 @@ config();
 import { hashPassword } from "./passwordManager.js";
 import mongoose from "mongoose";
 mongoose.set("strictQuery", false);
-await mongoose.connect(
-	process.env.dbURI || "mongodb://127.0.0.1:27017/vns-bank"
-);
+await mongoose.connect(process.env.dbURI);
 
 import staff from "./models/staff.js";
 import user from "./models/user.js";
