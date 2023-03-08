@@ -29,6 +29,6 @@
 		"mongodb-memory-server": "^8.11.5"
 	},
 	"scripts": {
-		"test": "mocha --exit"
+		"test": "mocha --exit --bail"
 	}
 }
