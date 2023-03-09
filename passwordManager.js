@@ -1,5 +1,4 @@
 import { hashSync, hash as _hash, compare } from "bcrypt";
-import dbManager from "./dbManager.js";
 // Calculate salt rounds for 200ms hashing
 export let saltRounds = 10;
 {
@@ -12,6 +11,9 @@ export let saltRounds = 10;
 		saltRounds++;
 		duration *= 2;
 	}
+}
+export function setSaltRounds(newSaltRounds) {
+	saltRounds = newSaltRounds;
 }
 
 export async function hashPassword(password) {
