@@ -9,16 +9,20 @@ const staffSchema = new mongoose.Schema({
 
 const Staff = mongoose.model("Staff", staffSchema);
 
-async function create(username) {
+async function create(username, password, admin) {
 	if (await Staff.exists({ username: username })) {
 		return { success: false, message: "Staff already exists" };
 	}
 	if (!username) {
 		return { success: false, message: "Username cannot be empty" };
 	}
-
+	if (password) {
+		password = await passwordManager.hashPassword(password);
+	}
 	let staff = new Staff({
 		username: username,
+		password: password || "",
+		admin: admin || false,
 	});
 	await staff.save();
 	return { success: true };
