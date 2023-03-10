@@ -38,8 +38,8 @@
 		>
 			<label for="aktie">Vælg aktie:</label>
 			<select name="aktieType">
-				<% aktieTyper.forEach((aktie) => { %>
-				<option value="<%= aktie.id %>"><%= aktie.navn %></option>
+				<% aktieTypes.forEach((aktie) => { %>
+				<option value="<%= aktie.id %>"><%= aktie.name %></option>
 				<% }); %>
 			</select>
 			<label for="amount">Antal:</label>
