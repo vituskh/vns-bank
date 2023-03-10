@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import passwordManager from "../passwordManager.js";
 
 const staffSchema = new mongoose.Schema({
 	username: String,
@@ -36,7 +37,7 @@ async function deleteStaff(username) {
 }
 
 async function checkPassword(username, password) {
-	if (!(await dbManager.models.Staff.exists({ username: username }))) {
+	if (!(await Staff.exists({ username: username }))) {
 		return {
 			success: false,
 			message: "Wrong password or username",
@@ -44,14 +45,14 @@ async function checkPassword(username, password) {
 		};
 	}
 
-	let staff = await dbManager.models.Staff.findOne({ username: username });
+	let staff = await Staff.findOne({ username: username });
 	if (staff.password === "") {
-		staff.password = await hashPassword(password);
+		staff.password = await passwordManager.hashPassword(password);
 		staff.save();
 		return { success: true, admin: staff.admin || false };
 	}
 
-	if (!(await comparePassword(password, staff.password))) {
+	if (!(await passwordManager.comparePassword(password, staff.password))) {
 		return {
 			success: false,
 			message: "Wrong password or username",

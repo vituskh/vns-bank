@@ -33,4 +33,31 @@ describe("Staff", () => {
 			expect(result.success).to.be.false;
 		});
 	});
+	describe("password", () => {
+		it("should make a password on first login", async function () {
+			await staff.create("testPassword");
+			let result = await staff.checkPassword("testPassword", "testPassword");
+			expect(result.success).to.be.true;
+		});
+		it("should be able to login with the password", async function () {
+			await staff.create("testPasswordLogin");
+			await staff.checkPassword("testPasswordLogin", "testPasswordLogin"); // Make password
+
+			let result = await staff.checkPassword(
+				"testPasswordLogin",
+				"testPasswordLogin"
+			);
+			expect(result.success).to.be.true;
+		});
+		it("should not be able to login with the wrong password", async function () {
+			await staff.create("testPasswordWrong");
+			await staff.checkPassword("testPasswordWrong", "testPasswordWrong"); // Make password
+
+			let result = await staff.checkPassword(
+				"testPasswordWrong",
+				"wrongPassword"
+			);
+			expect(result.success).to.be.false;
+		});
+	});
 });

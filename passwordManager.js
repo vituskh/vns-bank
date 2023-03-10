@@ -35,4 +35,5 @@ export function sanitizeUsername(username) {
 export default {
 	hashPassword,
 	sanitizeUsername,
+	comparePassword,
 };

@@ -46,6 +46,21 @@ describe("User", () => {
 			expect(passwordMatch).to.be.true;
 		});
 	});
+	describe("login", () => {
+		it("should login with the correct password", async function () {
+			await user.create("testPassword", "testPassword");
+			let result = await user.checkPassword("testPassword", "testPassword");
+			expect(result.success).to.be.true;
+		});
+		it("should not login with the wrong password", async function () {
+			await user.create("testWrongPassword", "testWrongPassword");
+			let result = await user.checkPassword(
+				"testWrongPassword",
+				"wrongPassword"
+			);
+			expect(result.success).to.be.false;
+		});
+	});
 });
 describe("aktier", async function () {
 	it("should add a new aktie", async function () {

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { hashPassword } from "../passwordManager.js";
+import passwordManager from "../passwordManager.js";
 
 const userSchema = new mongoose.Schema({
 	username: String,
@@ -92,13 +93,13 @@ async function removeAktie(username, investedIn, amount) {
 }
 
 async function checkPassword(username, password) {
-	if (!(await dbManager.models.User.exists({ username: username }))) {
+	if (!(await User.exists({ username: username }))) {
 		return { success: false, message: "Wrong password or username" };
 	}
 
-	let user = await dbManager.models.User.findOne({ username: username });
+	let user = await User.findOne({ username: username });
 
-	if (!(await comparePassword(password, user.password))) {
+	if (!(await passwordManager.comparePassword(password, user.password))) {
 		return { success: false, message: "Wrong password or username" };
 	}
 
