@@ -1,5 +1,7 @@
 import { Router } from "express";
 const router = Router();
+import handle from "express-async-handler";
+
 import passwordManager from "../passwordManager.js";
 import staff from "../models/staff.js";
 
@@ -14,24 +16,27 @@ router.get("/", (req, res) => {
 	}
 });
 
-router.post("/login", async (req, res) => {
-	let username = passwordManager.sanitizeUsername(req.body.username || "");
-	let password = req.body.password;
-	console.log(username, password, req.body);
-	if (!username || !password) {
-		res.status(400).send({ success: false, message: "Missing fields" });
-		return;
-	}
+router.post(
+	"/login",
+	handle(async (req, res) => {
+		let username = passwordManager.sanitizeUsername(req.body.username || "");
+		let password = req.body.password;
+		console.log(username, password, req.body);
+		if (!username || !password) {
+			res.status(400).send({ success: false, message: "Missing fields" });
+			return;
+		}
 
-	let result = await staff.checkPassword(username, password);
-	if (result.success) {
-		req.session.username = username;
-		req.session.admin = result.admin;
-		res.status(200).send({ success: true });
-	} else {
-		res.status(403).send({ success: false, message: result.message });
-	}
-});
+		let result = await staff.checkPassword(username, password);
+		if (result.success) {
+			req.session.username = username;
+			req.session.admin = result.admin;
+			res.status(200).send({ success: true });
+		} else {
+			res.status(403).send({ success: false, message: result.message });
+		}
+	})
+);
 
 router.get("/logout", (req, res) => {
 	req.session.destroy();
