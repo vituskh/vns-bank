@@ -1,24 +1,6 @@
 import { expect } from "chai";
-import mongoose from "mongoose";
-import { MongoMemoryServer } from "mongodb-memory-server";
+import mongoose from "./helper.js";
 import staff from "../models/staff.js";
-mongoose.set("strictQuery", false);
-let mongoServer;
-before(async function () {
-	mongoServer = await MongoMemoryServer.create();
-	const mongoUri = await mongoServer.getUri();
-	await mongoose.connect(mongoUri, {
-		useNewUrlParser: true,
-		useUnifiedTopology: true,
-	});
-	return;
-});
-
-after(async function () {
-	await mongoose.disconnect();
-	await mongoServer.stop();
-	return;
-});
 
 describe("Staff", () => {
 	describe("create", () => {

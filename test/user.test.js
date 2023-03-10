@@ -1,26 +1,5 @@
 import { expect } from "chai";
-import mongoose from "mongoose";
-import { MongoMemoryServer } from "mongodb-memory-server";
-mongoose.set("strictQuery", false);
-let mongoServer;
-before(async function () {
-	mongoServer = await MongoMemoryServer.create();
-	const mongoUri = await mongoServer.getUri();
-	await mongoose.connect(mongoUri, {
-		useNewUrlParser: true,
-		useUnifiedTopology: true,
-	});
-	return;
-});
-
-after(async function () {
-	await mongoose.disconnect();
-	await mongoServer.stop();
-	return;
-});
-
-import { setSaltRounds } from "../passwordManager.js";
-setSaltRounds(1);
+import mongoose from "./helper.js";
 
 import { compare } from "bcrypt";
 
