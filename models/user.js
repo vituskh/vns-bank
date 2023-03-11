@@ -40,7 +40,7 @@ async function addAktie(username, investedIn, amount) {
 	if (!investedIn) {
 		return { success: false, message: "Invested in cannot be empty" };
 	}
-	if (isNaN(amount)) {
+	if (isNaN(amount) || typeof amount != "number") {
 		return { success: false, message: "Amount must be a number" };
 	}
 
@@ -66,7 +66,7 @@ async function removeAktie(username, investedIn, amount) {
 	if (!investedIn) {
 		return { success: false, message: "Invested in cannot be empty" };
 	}
-	if (isNaN(amount)) {
+	if (isNaN(amount) || typeof amount != "number") {
 		return { success: false, message: "Amount must be a number" };
 	}
 

@@ -90,6 +90,10 @@ describe("aktier", async function () {
 			let result = await user.addAktie("testAktier", "testAktieNaN", "test");
 			expect(result.success).to.be.false;
 		});
+		it("should not add a new aktie if the amount is a string that looks like a number", async function () {
+			let result = await user.addAktie("testAktier", "testAktieString", "10");
+			expect(result.success).to.be.false;
+		});
 		it("should not add a new aktie if the amount is negative", async function () {
 			let result = await user.addAktie("testAktier", "testAktieNegative", -10);
 			expect(result.success).to.be.false;
