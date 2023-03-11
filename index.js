@@ -10,6 +10,7 @@ import connectMongo from "connect-mongo";
 import staffUIRouter from "./routes/staffUI.js";
 import adminRouter from "./routes/admin.js";
 import indbetatalingRouter from "./routes/indbetaling.js";
+import udbetalingRouter from "./routes/udbetaling.js";
 
 import dbManager from "./dbManager.js";
 if ((await dbManager.models.Staff.countDocuments()) == 0) {
@@ -47,5 +48,7 @@ app.use(adminRouter);
 app.use(staffUIRouter);
 
 app.use(indbetatalingRouter);
+
+app.use(udbetalingRouter);
 
 app.listen(config.port, () => console.log(`Listening on port ${config.port}!`));

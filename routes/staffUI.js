@@ -1,6 +1,6 @@
 import { Router } from "express";
 const router = Router();
-import handle from "express-async-handler";
+import asyncHandler from "express-async-handler";
 
 import passwordManager from "../passwordManager.js";
 import staff from "../models/staff.js";
@@ -18,7 +18,7 @@ router.get("/", (req, res) => {
 
 router.post(
 	"/login",
-	handle(async (req, res) => {
+	asyncHandler(async (req, res) => {
 		let username = passwordManager.sanitizeUsername(req.body.username || "");
 		let password = req.body.password;
 		console.log(username, password, req.body);

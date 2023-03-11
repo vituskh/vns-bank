@@ -1,6 +1,6 @@
 import config from "../environment.js";
 import { Router } from "express";
-import handle from "express-async-handler";
+import asyncHandler from "express-async-handler";
 
 import dbManager from "../dbManager.js";
 import passwordManager from "../passwordManager.js";
@@ -10,7 +10,7 @@ const router = Router();
 
 router.get(
 	"/indbetaling",
-	handle(async (req, res) => {
+	asyncHandler(async (req, res) => {
 		if (req.session.username) {
 			res.render("indbetaling", {
 				aktieTypes: config.aktieTypes,
@@ -23,7 +23,7 @@ router.get(
 
 router.get(
 	"/userExists",
-	handle(async (req, res) => {
+	asyncHandler(async (req, res) => {
 		if (!req.session.username) {
 			res.sendStatus(403);
 			return;
@@ -43,7 +43,7 @@ router.get(
 
 router.post(
 	"/createUser",
-	handle(async (req, res) => {
+	asyncHandler(async (req, res) => {
 		if (!req.session.username) {
 			res.sendStatus(403);
 			return;
@@ -72,11 +72,12 @@ router.post(
 
 router.post(
 	"/createAktie",
-	handle(async (req, res) => {
+	asyncHandler(async (req, res) => {
 		if (!req.session.username) {
 			res.sendStatus(403);
 			return;
 		}
+		req.body.amount = parseInt(req.body.amount);
 		if (!req.body.username || !req.body.aktieType || !req.body.amount) {
 			res.status(400).send({ success: false, message: "Missing fields" });
 			return;

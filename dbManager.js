@@ -17,11 +17,13 @@ export default {
 		staff: {
 			create: staff.create,
 			delete: staff.delete,
+			checkPassword: staff.checkPassword,
 		},
 		user: {
 			create: user.create,
 			addAktie: user.addAktie,
 			removeAktie: user.removeAktie,
+			checkPassword: user.checkPassword,
 		},
 	},
 };
@@ -30,6 +32,7 @@ export let Staff = {
 	model: staff.Staff,
 	create: staff.create,
 	delete: staff.delete,
+	checkPassword: staff.checkPassword,
 };
 
 export let User = {
@@ -37,6 +40,7 @@ export let User = {
 	create: user.create,
 	addAktie: user.addAktie,
 	removeAktie: user.removeAktie,
+	checkPassword: user.checkPassword,
 };
 
 export let models = {
