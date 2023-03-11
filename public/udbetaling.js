@@ -9,7 +9,7 @@ function getAktier(event, form) {
 		alert("Du skal udfylde begge felter");
 		return;
 	}
-	fetch("/getAktier", {
+	fetch("/udbetaling/api/getAktier", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -58,7 +58,7 @@ function getAktier(event, form) {
 
 function udbetaling(id, amount, button) {
 	let username = loginForm.username.value;
-	fetch("/udbetalAktie", {
+	fetch("/udbetaling/api/udbetalAktie", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",

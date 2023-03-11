@@ -27,7 +27,7 @@
 			function createStaff(e, form) {
 				e.preventDefault();
 				const username = form.staffRegisterName.value;
-				fetch('/admin/staff', {
+				fetch('/admin/api/staff', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json'
@@ -51,7 +51,7 @@
 			}
 			function deleteStaff(element) {
 				const username = element.previousElementSibling.innerText;
-				fetch(`/admin/staff/`, {
+				fetch(`/admin/api/staff/`, {
 					method: 'DELETE',
 					headers: {
 						'Content-Type': 'application/json'

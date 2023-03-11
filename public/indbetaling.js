@@ -20,7 +20,7 @@ function makeUser(e, form) {
 	const passwordDiv = document.getElementById("passwordDiv");
 	if (passwordDiv.hidden) {
 		// check if user exists
-		const url = new URL(`/userExists/`, window.location);
+		const url = new URL(`/indbetaling/api/user/`, window.location);
 		url.searchParams.append("username", username);
 		fetch(`${url}`)
 			.then((res) => res.json())
@@ -41,7 +41,7 @@ function makeUser(e, form) {
 			alert("Koder matcher ikke");
 			return;
 		}
-		fetch("/createUser", {
+		fetch("/indbetaling/api/user", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -89,7 +89,7 @@ function makeAktie(e, form) {
 	const amount = form.amount.value;
 	const username = document.getElementById("makeUser").username.value;
 
-	fetch("/createAktie", {
+	fetch("/indbetaling/api/aktie", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",

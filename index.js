@@ -7,10 +7,10 @@ const app = express();
 import session from "express-session";
 import connectMongo from "connect-mongo";
 
-import staffUIRouter from "./routes/staffUI.js";
-import adminRouter from "./routes/admin.js";
-import indbetatalingRouter from "./routes/indbetaling.js";
-import udbetalingRouter from "./routes/udbetaling.js";
+import staffUIRouter from "./routes/staffUIRouter.js";
+import adminRouter from "./routes/adminRouter.js";
+import indbetatalingRouter from "./routes/indbetalingRouter.js";
+import udbetalingRouter from "./routes/udbetalingRouter.js";
 
 import dbManager from "./dbManager.js";
 if ((await dbManager.models.Staff.countDocuments()) == 0) {
@@ -43,12 +43,12 @@ app.use(
 	})
 );
 
-app.use(adminRouter);
+app.use("/admin", adminRouter);
 
 app.use(staffUIRouter);
 
-app.use(indbetatalingRouter);
+app.use("/indbetaling", indbetatalingRouter);
 
-app.use(udbetalingRouter);
+app.use("/udbetaling", udbetalingRouter);
 
 app.listen(config.port, () => console.log(`Listening on port ${config.port}!`));
