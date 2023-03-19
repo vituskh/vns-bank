@@ -2,7 +2,7 @@ import { Router } from "express";
 const router = Router();
 import asyncHandler from "express-async-handler";
 
-import passwordManager from "../passwordManager.js";
+import passwordManager from "../src/passwordManager.js";
 import staff from "../models/staff.js";
 
 router.get("/", (req, res) => {

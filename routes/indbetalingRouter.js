@@ -1,9 +1,9 @@
-import config from "../environment.js";
+import config from "../src/environment.js";
 import { Router } from "express";
 import asyncHandler from "express-async-handler";
 
-import dbManager from "../dbManager.js";
-import passwordManager from "../passwordManager.js";
+import dbManager from "../src/dbManager.js";
+import passwordManager from "../src/passwordManager.js";
 const { Staff, User } = dbManager.models;
 
 const router = Router();

@@ -1,8 +1,8 @@
 import { Router } from "express";
 import asyncHandler from "express-async-handler";
 
-import dbManager, { models } from "../dbManager.js";
-import passwordManager from "../passwordManager.js";
+import dbManager, { models } from "../src/dbManager.js";
+import passwordManager from "../src/passwordManager.js";
 
 const router = Router();
 

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { hashPassword } from "../passwordManager.js";
-import passwordManager from "../passwordManager.js";
+import { hashPassword } from "../src/passwordManager.js";
+import passwordManager from "../src/passwordManager.js";
 
 const userSchema = new mongoose.Schema({
 	username: String,

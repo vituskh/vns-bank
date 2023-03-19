@@ -1,9 +1,9 @@
-import config from "../environment.js";
+import config from "../src/environment.js";
 import { Router } from "express";
 const router = Router();
 import asyncHandler from "express-async-handler";
-import { User } from "../dbManager.js";
-import { sanitizeUsername } from "../passwordManager.js";
+import { User } from "../src/dbManager.js";
+import { sanitizeUsername } from "../src/passwordManager.js";
 
 router.get("/", (req, res) => {
 	if (req.session.username) {

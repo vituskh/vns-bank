@@ -1,5 +1,5 @@
 "use strict";
-import config from "./environment.js";
+import config from "./src/environment.js";
 //import "./cli.js";
 
 import express, { static as serveStatic, json, urlencoded } from "express";
@@ -12,7 +12,7 @@ import adminRouter from "./routes/adminRouter.js";
 import indbetatalingRouter from "./routes/indbetalingRouter.js";
 import udbetalingRouter from "./routes/udbetalingRouter.js";
 
-import dbManager from "./dbManager.js";
+import dbManager from "./src/dbManager.js";
 if ((await dbManager.models.Staff.countDocuments()) == 0) {
 	console.warn("No staff found, creating admin user");
 	console.warn("Username: admin_temp_deleteme");

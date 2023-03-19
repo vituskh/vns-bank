@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 mongoose.set("strictQuery", false);
-import { setSaltRounds } from "../passwordManager.js";
+import { setSaltRounds } from "../src/passwordManager.js";
 
 let mongoServer;
 before(async function () {

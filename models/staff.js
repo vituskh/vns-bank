@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import passwordManager from "../passwordManager.js";
+import passwordManager from "../src/passwordManager.js";
 
 const staffSchema = new mongoose.Schema({
 	username: String,

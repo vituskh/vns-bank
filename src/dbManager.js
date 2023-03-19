@@ -5,8 +5,8 @@ import mongoose from "mongoose";
 mongoose.set("strictQuery", false);
 await mongoose.connect(config.dbURI);
 
-import staff from "./models/staff.js";
-import user from "./models/user.js";
+import staff from "../models/staff.js";
+import user from "../models/user.js";
 
 export default {
 	models: {
