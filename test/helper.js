@@ -3,7 +3,7 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 mongoose.set("strictQuery", false);
 import { setSaltRounds } from "../src/passwordManager.js";
 
-import config, { setVariable } from "../environment.js";
+import config, { setVariable } from "../src/environment.js";
 setVariable("NODE_ENV", "test");
 
 let mongoServer;
