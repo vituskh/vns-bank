@@ -10,10 +10,16 @@ if (process.env.aktieTypes) {
 		{ name: "Test 3", id: "test3" },
 	];
 }
-export default {
+let env = {
 	env: process.env.NODE_ENV || "development",
 	port: process.env.PORT || 3000,
 	dbURI: process.env.dbURI,
 	secret: process.env.SECRET,
 	aktieTypes,
 };
+export default env;
+
+export function setVariable(key, value) {
+	process.env[key] = value;
+	env[key] = value;
+}
