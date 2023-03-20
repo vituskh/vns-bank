@@ -4,6 +4,7 @@ import asyncHandler from "express-async-handler";
 
 import dbManager from "../src/dbManager.js";
 import passwordManager from "../src/passwordManager.js";
+import logger from "../src/logging.js";
 const { Staff, User } = dbManager.models;
 
 const router = Router();
@@ -43,6 +44,7 @@ export async function userExists(req, res) {
 }
 
 export async function createUser(req, res) {
+	logger.debug(`${req.session.username} createUser ${req.body.username}`);
 	if (!req.session.username) {
 		res.sendStatus(403);
 		return;
@@ -63,12 +65,23 @@ export async function createUser(req, res) {
 	let result = await dbManager.methods.user.create(username, password);
 	if (result.success) {
 		res.status(200).send({ success: true });
+		logger.activity(`${req.session.username} created ${username}`);
 	} else {
 		res.status(400).send({ success: false, message: result.message });
+		logger.error(
+			`${req.session.username} tried to create ${username} but it failed: ${result.message}`
+		);
 	}
 }
 
 export async function createAktie(req, res) {
+	logger.debug(
+		`${req.session.username} createAktie ${JSON.stringify({
+			user: req.body.username,
+			type: req.body.aktieType,
+			amount: req.body.amount,
+		})}`
+	);
 	if (!req.session.username) {
 		res.sendStatus(403);
 		return;
@@ -100,8 +113,14 @@ export async function createAktie(req, res) {
 	);
 	if (result.success) {
 		res.status(200).send({ success: true });
+		logger.activity(
+			`${req.session.username} created ${amount} ${aktieType} for ${username}`
+		);
 	} else {
 		res.status(400).send({ success: false, message: result.message });
+		logger.error(
+			`${req.session.username} tried to create ${amount} ${aktieType} for ${username} but it failed: ${result.message}`
+		);
 	}
 }
 

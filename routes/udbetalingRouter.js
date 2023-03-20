@@ -4,6 +4,7 @@ const router = Router();
 import asyncHandler from "express-async-handler";
 import { User } from "../src/dbManager.js";
 import { sanitizeUsername } from "../src/passwordManager.js";
+import logger from "../src/logging.js";
 
 router.get("/", (req, res) => {
 	if (req.session.username) {
@@ -19,6 +20,7 @@ router.post("/api/getAktier", asyncHandler(getAktier));
 router.post("/api/udbetalAktie", asyncHandler(udbetalAktie));
 
 export async function getAktier(req, res) {
+	logger.debug(`${req.session.username} getAktier for ${req.body.username}`);
 	if (!req.session.username) {
 		res.sendStatus(403);
 		return;
@@ -56,6 +58,7 @@ export async function getAktier(req, res) {
 }
 
 async function udbetalAktie(req, res) {
+	logger.debug(`${req.session.username} udbetalAktie for ${req.body.username}`);
 	if (!req.session.username) {
 		res.sendStatus(403);
 		return;
@@ -70,9 +73,23 @@ async function udbetalAktie(req, res) {
 
 	let result = await User.removeAktie(username, aktieId, amount);
 	if (!result.success) {
+		logger.error(
+			`${req.session.username} udbetalAktie ${JSON.stringify({
+				username,
+				aktieId,
+				amount,
+			})} failed: ${result.message}`
+		);
 		res.status(409).send({ success: false, message: result.message });
 		return;
 	}
+	logger.activity(
+		`${req.session.username} udbetalAktie ${JSON.stringify({
+			username,
+			aktieId,
+			amount,
+		})} succeeded`
+	);
 	res.send({ success: true });
 }
 

@@ -4,6 +4,7 @@ import asyncHandler from "express-async-handler";
 
 import passwordManager from "../src/passwordManager.js";
 import staff from "../models/staff.js";
+import logger from "../src/logging.js";
 
 router.get("/", (req, res) => {
 	if (req.session.username) {
@@ -18,6 +19,7 @@ router.get("/", (req, res) => {
 
 router.post("/login", asyncHandler(login));
 export async function login(req, res) {
+	logger.debug(`login attempt ${req.body.username} `);
 	let username = passwordManager.sanitizeUsername(req.body.username || "");
 	let password = req.body.password;
 	console.log(username, password, req.body);
@@ -30,6 +32,7 @@ export async function login(req, res) {
 	if (result.success) {
 		req.session.username = username;
 		req.session.admin = result.admin;
+		logger.debug(`${req.session.username} login success`);
 		res.status(200).send({ success: true });
 	} else {
 		res.status(403).send({ success: false, message: result.message });
