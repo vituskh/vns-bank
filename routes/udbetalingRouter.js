@@ -41,7 +41,9 @@ export async function getAktier(req, res) {
 	let passwordResult = await User.checkPassword(username, password);
 
 	if (!passwordResult.success) {
-		res.status(400).send({ success: false, message: "Wrong password" });
+		res
+			.status(400)
+			.send({ success: false, message: "Wrong password or username" });
 		return;
 	}
 

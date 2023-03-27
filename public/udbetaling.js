@@ -21,7 +21,11 @@ function getAktier(event, form) {
 	})
 		.then((res) => res.json())
 		.then((res) => {
-			console.log(res.aktier);
+			if (!res.success && res.message == "Wrong password or username") {
+				alert("Forkert brugernavn eller kodeord");
+				reset();
+				return;
+			}
 			tableBody.innerHTML = "";
 			res.aktier.forEach((aktie) => {
 				let row = document.createElement("tr");
