@@ -25,7 +25,7 @@ export async function getAktier(req, res) {
 		res.sendStatus(403);
 		return;
 	}
-	var username = sanitizeUsername(req.session.username);
+	var username = sanitizeUsername(req.body.username);
 	var password = req.body.password;
 	if (!username || !password) {
 		res.status(400).send({ success: false, message: "Missing fields" });
@@ -39,10 +39,9 @@ export async function getAktier(req, res) {
 		return;
 	}
 	let passwordResult = await User.checkPassword(username, password);
+
 	if (!passwordResult.success) {
-		res
-			.status(400)
-			.send({ success: false, message: "Wrong password or username" });
+		res.status(400).send({ success: false, message: "Wrong password" });
 		return;
 	}
 

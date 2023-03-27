@@ -98,7 +98,6 @@ async function checkPassword(username, password) {
 	}
 
 	let user = await User.findOne({ username: username });
-
 	if (!(await passwordManager.comparePassword(password, user.password))) {
 		return { success: false, message: "Wrong password or username" };
 	}
