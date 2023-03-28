@@ -104,7 +104,6 @@ async function updateAktier() {
 		let aktier = users[i].aktier;
 		for (let j = 0; j < aktier.length; j++) {
 			const aktie = aktier[j];
-			console.log(aktie);
 			let aktieType = aktieTypes.find((type) => type.id == aktie.investedIn);
 			aktieType.amountInvested += aktie.amount;
 			totalInvested += aktie.amount;
@@ -118,25 +117,8 @@ async function updateAktier() {
 			let aktie = aktier[j];
 			let aktieType = aktieTypes.find((type) => type.id == aktie.investedIn);
 			let oldAmount = aktie.amount;
-			if (method == "std") {
-				aktie.amount +=
-					(aktie.amount / aktieType.amountInvested) * aktieType.income;
-				aktie.amount *= config.aktieValueMultiplier;
-			} else if (method == "redistribute") {
-				aktie.amount =
-					(aktieType.income / totalIncome) *
-					(aktie.amount / aktieType.amountInvested) *
-					totalInvested;
-			} else if (method == "original") {
-				aktie.amount =
-					(aktieType.income / aktieType.amountInvested) * aktie.amount;
-			} else {
-				throw new Error("Unknown method");
-			}
+			calculateNewAmount(aktie, aktieType, totalIncome, totalInvested, method);
 
-			aktie.amount = Math.round(
-				aktie.amount - config.aktieRoundThreshold + 0.5
-			);
 			if (aktie.amount < 0) aktie.amount = 0;
 			if (aktie.amount > 500) {
 				console.warn("Aktie value too high, setting to 500");
@@ -150,14 +132,24 @@ async function updateAktier() {
 	console.log("Total inflation: " + totalInflation);
 
 	//estimates
-	aktieTypes.forEach((aktie) => {
-		if (aktie.amountInvested < 5) return;
+	aktieTypes.forEach((aktieType) => {
+		let testAktie = {
+			amount: 1,
+			investedIn: aktieType.id,
+		};
+		if (aktieType.amountInvested == 0) return;
+		let oldAmount = testAktie.amount;
+		calculateNewAmount(
+			testAktie,
+			aktieType,
+			totalIncome,
+			totalInvested,
+			method,
+			false
+		);
 		console.log(
-			"5 " +
-				aktie.id +
-				" would be " +
-				(5 + (5 / aktie.amountInvested) * aktie.income)
-		) * 0.5;
+			`Estimate for ${aktieType.id}: ${oldAmount} = ${testAktie.amount}`
+		);
 	});
 
 	let confirm = await readLineAsync("Confirm? (y/n): ");
@@ -244,5 +236,40 @@ async function getCheaters() {
 		if (aktieSum > 5) {
 			console.log(user.username + ": " + aktieSum + " (aktieSum)");
 		}
+	}
+}
+
+function calculateNewAmount(
+	aktie,
+	aktieType,
+	totalIncome,
+	totalInvested,
+	method,
+	round
+) {
+	if (typeof round == "undefined") round = true;
+	if (method == "std") {
+		aktie.amount +=
+			(aktie.amount / aktieType.amountInvested) * aktieType.income;
+		aktie.amount *= config.aktieValueMultiplier;
+	} else if (method == "redistribute") {
+		aktie.amount =
+			(aktieType.income / totalIncome) *
+			(aktie.amount / aktieType.amountInvested) *
+			totalInvested;
+	} else if (method == "original") {
+		aktie.amount = (aktieType.income / aktieType.amountInvested) * aktie.amount;
+	} else if (method == "recombo") {
+		let add = (aktie.amount / aktieType.amountInvested) * aktieType.income;
+		aktie.amount =
+			(aktieType.income / totalIncome) *
+			(aktie.amount / aktieType.amountInvested) *
+			totalInvested;
+		aktie.amount += add * 0.1;
+	} else {
+		throw new Error("Unknown method");
+	}
+	if (round) {
+		aktie.amount = Math.round(aktie.amount - config.aktieRoundThreshold + 0.5);
 	}
 }
