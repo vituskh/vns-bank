@@ -1,6 +1,7 @@
 import config from "./src/environment.js";
 import readline from "readline";
 import { User, Staff, connection } from "./src/dbManager.js";
+import { readFile } from "fs/promises";
 
 const rl = readline.createInterface({
 	input: process.stdin,
@@ -63,14 +64,30 @@ main();
 
 async function updateAktier() {
 	let aktieTypes = [];
-	for (let i = 0; i < config.aktieTypes.length; i++) {
-		const type = config.aktieTypes[i];
-		let total = Number(await readLineAsync(`Total ${type.name}: `));
-		aktieTypes.push({
-			id: type.id,
-			income: total,
-			amountInvested: 0,
+	let totalIncome = 0;
+	let manualOrFile = await readLineAsync("Manual or file (m/f): ");
+	if (manualOrFile == "f") {
+		let fileName = new URL("./income.json", import.meta.url);
+		let file = JSON.parse(await readFile(fileName));
+		file.forEach((type) => {
+			aktieTypes.push({
+				id: type.id,
+				income: type.income,
+				amountInvested: 0,
+			});
+			totalIncome += type.income;
 		});
+	} else {
+		for (let i = 0; i < config.aktieTypes.length; i++) {
+			const type = config.aktieTypes[i];
+			let total = Number(await readLineAsync(`Total ${type.name}: `));
+			aktieTypes.push({
+				id: type.id,
+				income: total,
+				amountInvested: 0,
+			});
+			totalIncome += total;
+		}
 	}
 
 	console.log(JSON.stringify(aktieTypes, null, 2));
@@ -79,13 +96,18 @@ async function updateAktier() {
 		return;
 	}
 
+	let method = await readLineAsync("Method (std, redistribute, original): ");
+
 	let users = await User.model.find({});
+	let totalInvested = 0;
 	for (let i = 0; i < users.length; i++) {
 		let aktier = users[i].aktier;
 		for (let j = 0; j < aktier.length; j++) {
 			const aktie = aktier[j];
+			console.log(aktie);
 			let aktieType = aktieTypes.find((type) => type.id == aktie.investedIn);
 			aktieType.amountInvested += aktie.amount;
+			totalInvested += aktie.amount;
 		}
 	}
 	let totalInflation = 0;
@@ -101,12 +123,21 @@ async function updateAktier() {
 				amountInvested: aktieType.amountInvested,
 				income: aktieType.income,
 			});
-
-			aktie.amount +=
-				(aktie.amount / aktieType.amountInvested) * aktieType.income;
-			aktie.amount *= config.aktieValueMultiplier;
-			/*aktie.amount =
-				(aktieType.income / aktieType.amountInvested) * aktie.amount;*/
+			if (method == "std") {
+				aktie.amount +=
+					(aktie.amount / aktieType.amountInvested) * aktieType.income;
+				aktie.amount *= config.aktieValueMultiplier;
+			} else if (method == "redistribute") {
+				aktie.amount =
+					(aktieType.income / totalIncome) *
+					(aktie.amount / aktieType.amountInvested) *
+					totalInvested;
+			} else if (method == "original") {
+				aktie.amount =
+					(aktieType.income / aktieType.amountInvested) * aktie.amount;
+			} else {
+				throw new Error("Unknown method");
+			}
 			console.log({
 				amount: aktie.amount,
 				aktieRoundThreshold: config.aktieRoundThreshold,
@@ -217,5 +248,4 @@ async function getCheaters() {
 			console.log(user.username + ": " + aktieSum + " (aktieSum)");
 		}
 	}
-	console.log(cheaters);
 }
