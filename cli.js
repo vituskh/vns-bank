@@ -189,4 +189,7 @@ async function countAktieTypes() {
 		).toFixed(2);
 	}
 	console.log(aktieTypes);
+	console.log("total: " + total)
+	console.log("users: " + users.length)
+	console.log("avg. " + total / users.length)
 }
