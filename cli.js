@@ -95,27 +95,17 @@ async function updateAktier() {
 		for (let j = 0; j < aktier.length; j++) {
 			let aktie = aktier[j];
 			let aktieType = aktieTypes.find((type) => type.id == aktie.investedIn);
-			let oldAmount = aktie.amount;
-			console.log({
-				amount: aktie.amount,
-				amountInvested: aktieType.amountInvested,
-				income: aktieType.income,
-			});
+			let oldAmount = aktie.amount;;
 
 			aktie.amount +=
 				(aktie.amount / aktieType.amountInvested) * aktieType.income;
 			aktie.amount *= config.aktieValueMultiplier;
 			/*aktie.amount =
 				(aktieType.income / aktieType.amountInvested) * aktie.amount;*/
-			console.log({
-				amount: aktie.amount,
-				aktieRoundThreshold: config.aktieRoundThreshold,
-			});
 
 			aktie.amount = Math.round(
 				aktie.amount - config.aktieRoundThreshold + 0.5
 			);
-			console.log(aktie.amount);
 			if (aktie.amount < 0) aktie.amount = 0;
 			if (aktie.amount > 500) {
 				console.warn("Aktie value too high, setting to 500");
@@ -127,13 +117,12 @@ async function updateAktier() {
 		}
 	}
 	console.log("Total inflation: " + totalInflation);
-
-	//top 10 richest
-	let richest = users.sort((a, b) => b.money - a.money).slice(0, 10);
-	console.log("Richest:");
-	for (let i = 0; i < richest.length; i++) {
-		console.log(richest[i].username + ": " + richest[i].aktier);
-	}
+	
+	//estimates
+	aktieTypes.forEach((aktie) => {
+		if(aktie.amountInvested < 5) return
+		console.log("5 " + aktie.id + " would be " + (5+ (5 / aktie.amountInvested) * aktie.income)) * 0.5
+	})
 
 	let confirm = await readLineAsync("Confirm? (y/n): ");
 	if (confirm != "y") {
