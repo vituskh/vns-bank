@@ -8,6 +8,8 @@ await mongoose.connect(config.dbURI);
 import staff from "../models/staff.js";
 import user from "../models/user.js";
 
+import logger from "./logging.js";
+
 export default {
 	models: {
 		Staff: staff.Staff,
@@ -27,6 +29,16 @@ export default {
 		},
 	},
 };
+export let connection = mongoose.connection;
+
+connection.once("open", () => {
+	logger.info("Connected to database");
+});
+connection.on("error", (err) => {
+	logger.error(
+		"Error connecting to database: " + JSON.stringify(err) + " " + err
+	);
+});
 
 export let Staff = {
 	model: staff.Staff,

@@ -12,10 +12,12 @@ if (process.env.aktieTypes) {
 }
 let env = {
 	env: process.env.NODE_ENV || "development",
-	port: process.env.PORT || 3000,
+	port: Number(process.env.PORT) || 3000,
 	dbURI: process.env.dbURI,
 	secret: process.env.SECRET,
 	aktieTypes,
+	aktieRoundThreshold: Number(process.env.aktieRoundThreshold) || 0.5,
+	aktieValueMultiplier: Number(process.env.aktieValueMultiplier) || 1,
 };
 export default env;
 
