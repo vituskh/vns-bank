@@ -97,7 +97,8 @@ async function udbetalAktie(req, res) {
 export default router;
 
 function typeToReadable(aktieId) {
-	return config.aktieTypes.find((aktie) => aktie.id === aktieId).name;
+	if (!aktieId) throw new Error("No aktieId provided");
+	let aktie = config.aktieTypes.find((aktie) => aktie.id === aktieId);
+	if (!aktie) throw new Error(`No aktie found with id ${aktieId}`);
+	return aktie.name;
 }
-
-console.log(typeToReadable("test1"));
