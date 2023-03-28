@@ -118,11 +118,6 @@ async function updateAktier() {
 			let aktie = aktier[j];
 			let aktieType = aktieTypes.find((type) => type.id == aktie.investedIn);
 			let oldAmount = aktie.amount;
-			console.log({
-				amount: aktie.amount,
-				amountInvested: aktieType.amountInvested,
-				income: aktieType.income,
-			});
 			if (method == "std") {
 				aktie.amount +=
 					(aktie.amount / aktieType.amountInvested) * aktieType.income;
@@ -138,15 +133,10 @@ async function updateAktier() {
 			} else {
 				throw new Error("Unknown method");
 			}
-			console.log({
-				amount: aktie.amount,
-				aktieRoundThreshold: config.aktieRoundThreshold,
-			});
 
 			aktie.amount = Math.round(
 				aktie.amount - config.aktieRoundThreshold + 0.5
 			);
-			console.log(aktie.amount);
 			if (aktie.amount < 0) aktie.amount = 0;
 			if (aktie.amount > 500) {
 				console.warn("Aktie value too high, setting to 500");
@@ -159,12 +149,16 @@ async function updateAktier() {
 	}
 	console.log("Total inflation: " + totalInflation);
 
-	//top 10 richest
-	let richest = users.sort((a, b) => b.money - a.money).slice(0, 10);
-	console.log("Richest:");
-	for (let i = 0; i < richest.length; i++) {
-		console.log(richest[i].username + ": " + richest[i].aktier);
-	}
+	//estimates
+	aktieTypes.forEach((aktie) => {
+		if (aktie.amountInvested < 5) return;
+		console.log(
+			"5 " +
+				aktie.id +
+				" would be " +
+				(5 + (5 / aktie.amountInvested) * aktie.income)
+		) * 0.5;
+	});
 
 	let confirm = await readLineAsync("Confirm? (y/n): ");
 	if (confirm != "y") {
@@ -233,6 +227,9 @@ async function countAktieTypes() {
 		).toFixed(2);
 	}
 	console.log(aktieTypes);
+	console.log("total: " + total);
+	console.log("users: " + users.length);
+	console.log("avg. " + total / users.length);
 }
 
 async function getCheaters() {
