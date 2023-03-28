@@ -45,7 +45,7 @@ let consoleTransport = new winston.transports.Console({
 	format: winston.format.simple(),
 });
 
-if (config.NODE_ENV !== "production" && config.NODE_ENV !== "test") {
+if (config.env !== "production" && config.env !== "test") {
 	consoleTransport.level = "debug";
 } else if (config.NODE_ENV == "test") {
 	logger.transports.forEach((t) => (t.silent = true));

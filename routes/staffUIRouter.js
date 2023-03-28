@@ -22,7 +22,6 @@ export async function login(req, res) {
 	logger.debug(`login attempt ${req.body.username} `);
 	let username = passwordManager.sanitizeUsername(req.body.username || "");
 	let password = req.body.password;
-	console.log(username, password, req.body);
 	if (!username || !password) {
 		res.status(400).send({ success: false, message: "Missing fields" });
 		return;

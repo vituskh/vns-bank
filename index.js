@@ -1,7 +1,7 @@
 "use strict";
 import config from "./src/environment.js";
 //import "./cli.js";
-
+console.log(config.env, config.NODE_ENV, process.env.NODE_ENV)
 import express, { static as serveStatic, json, urlencoded } from "express";
 const app = express();
 import session from "express-session";
