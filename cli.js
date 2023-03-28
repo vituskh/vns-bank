@@ -39,6 +39,9 @@ async function main() {
 			case "countAktier":
 				await countAktieTypes();
 				break;
+			case "getCheaters":
+				await getCheaters();
+				break;
 			case "help":
 				console.log(
 					"Commands:\n" +
@@ -98,9 +101,12 @@ async function updateAktier() {
 				amountInvested: aktieType.amountInvested,
 				income: aktieType.income,
 			});
+
 			aktie.amount +=
 				(aktie.amount / aktieType.amountInvested) * aktieType.income;
 			aktie.amount *= config.aktieValueMultiplier;
+			/*aktie.amount =
+				(aktieType.income / aktieType.amountInvested) * aktie.amount;*/
 			console.log({
 				amount: aktie.amount,
 				aktieRoundThreshold: config.aktieRoundThreshold,
@@ -121,6 +127,13 @@ async function updateAktier() {
 		}
 	}
 	console.log("Total inflation: " + totalInflation);
+
+	//top 10 richest
+	let richest = users.sort((a, b) => b.money - a.money).slice(0, 10);
+	console.log("Richest:");
+	for (let i = 0; i < richest.length; i++) {
+		console.log(richest[i].username + ": " + richest[i].aktier);
+	}
 
 	let confirm = await readLineAsync("Confirm? (y/n): ");
 	if (confirm != "y") {
@@ -192,4 +205,20 @@ async function countAktieTypes() {
 	console.log("total: " + total)
 	console.log("users: " + users.length)
 	console.log("avg. " + total / users.length)
+}
+
+async function getCheaters() {
+	let users = await User.model.find({});
+	for (let i = 0; i < users.length; i++) {
+		const user = users[i];
+		let aktieSum = 0;
+		for (let j = 0; j < user.aktier.length; j++) {
+			const aktie = user.aktier[j];
+			aktieSum += aktie.amount;
+		}
+		if (aktieSum > 5) {
+			console.log(user.username + ": " + aktieSum + " (aktieSum)");
+		}
+	}
+	console.log(cheaters);
 }
