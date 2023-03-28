@@ -36,6 +36,9 @@ async function main() {
 			case "start":
 				await startServer();
 				break;
+			case "countAktier":
+				await countAktieTypes();
+				break;
 			case "help":
 				console.log(
 					"Commands:\n" +
@@ -154,4 +157,36 @@ async function resetPass() {
 
 async function startServer() {
 	import("./index.js");
+}
+
+async function countAktieTypes() {
+	let aktieTypes = config.aktieTypes.map((type) => ({
+		id: type.id,
+		amountInvested: 0,
+	}));
+
+	let users = await User.model.find({});
+	for (let i = 0; i < users.length; i++) {
+		let aktier = users[i].aktier;
+		for (let j = 0; j < aktier.length; j++) {
+			const aktie = aktier[j];
+			let aktieType = aktieTypes.find((type) => type.id == aktie.investedIn);
+			aktieType.amountInvested += aktie.amount;
+		}
+	}
+
+	//show percentage
+	let total = 0;
+	for (let i = 0; i < aktieTypes.length; i++) {
+		const aktieType = aktieTypes[i];
+		total += aktieType.amountInvested;
+	}
+	for (let i = 0; i < aktieTypes.length; i++) {
+		const aktieType = aktieTypes[i];
+		aktieType.amountInvestedPercentage = (
+			(aktieType.amountInvested / total) *
+			100
+		).toFixed(2);
+	}
+	console.log(aktieTypes);
 }
