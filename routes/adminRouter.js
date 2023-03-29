@@ -85,7 +85,7 @@ export async function getUser(req, res) {
 	if (req.session.username && req.session.admin) {
 		let username = passwordManager.sanitizeUsername(req.query.username || "");
 		let user;
-		if (req.query.wildcard) {
+		if (req.query.wildcard == "on") {
 			user = await models.User.find({
 				username: { $regex: ".*" + escapeRegex(req.query.username) + ".*" },
 			}).lean();
