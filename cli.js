@@ -2,6 +2,7 @@ import config from "./src/environment.js";
 import readline from "readline";
 import { User, Staff, connection } from "./src/dbManager.js";
 import { readFile } from "fs/promises";
+import { hashPassword } from "./src/passwordManager.js";
 
 const rl = readline.createInterface({
 	input: process.stdin,
@@ -218,6 +219,8 @@ async function resetPass() {
 	let user = await User.model.findOne({ username });
 
 	let password = await readLineAsync("Password: ");
+
+	user.password = await hashPassword(password);
 }
 
 async function startServer() {

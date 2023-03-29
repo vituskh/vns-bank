@@ -105,4 +105,25 @@ async function checkPassword(username, password) {
 	return { success: true };
 }
 
-export default { User, create, addAktie, removeAktie, checkPassword };
+async function updatePassword(username, password) {
+	let user = await User.findOne({ username });
+	if (!user) {
+		return { success: false, message: "User doesn't exist" };
+	}
+	user.password = await hashPassword(password);
+
+	let result = await user.save();
+	if (result) {
+		return { success: true };
+	}
+	return { success: false, message: "Something went wrong" };
+}
+
+export default {
+	User,
+	create,
+	addAktie,
+	removeAktie,
+	checkPassword,
+	updatePassword,
+};

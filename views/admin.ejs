@@ -23,6 +23,18 @@
 			<label for="staffRegisterName">Navn: </label><input id="staffRegisterName" type="text">
 		</form>
 
+		<h2>Get user</h2>
+		<form action="#" onsubmit="getUser(event, this); false">
+			<label for="username">Username: </label><input id="username" type="text">
+		</form>
+
+		<h2>Update password</h2>
+		<form action="#" onsubmit="updatePassword(event, this); false">
+			<label for="username">Username: </label><input id="username" type="text">
+			<label for="password">Password: </label><input id="password" type="password">
+			<input type="submit" value="Opdater">
+		</form>
+
 		<script>
 			function createStaff(e, form) {
 				e.preventDefault();
@@ -69,6 +81,50 @@
 						element.parentElement.remove();
 					});
 			}
+
+			function getUser(e, form) {
+				e.preventDefault();
+				const username = form.username.value;
+				let url = new URL('/admin/api/user', window.location.origin);
+				url.searchParams.append('username', username);
+				fetch(url)
+					.then((res) => res.json())
+					.then((data) => {
+						if (!data.success) {
+							alert(data.message);
+							return;
+						}
+						alert(JSON.stringify(data.user));
+					});
+				return false;
+			}
+
+			function updatePassword(e, form) {
+				console.log('updatePassword');
+				e.preventDefault();
+				const username = form.username.value;
+				const password = form.password.value;
+				fetch(`/admin/api/user/updatePassword`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ username, password })
+				})
+				
+					.then((res) => res.json())
+					.then((data) => {
+						form.username.value = '';
+						form.password.value = '';
+						if (!data.success) {
+							alert(data.message);
+							return;
+						}
+						alert(JSON.stringify(data));
+					});
+			}
+				
+			
 		</script>
 	
 

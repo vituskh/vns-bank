@@ -26,6 +26,7 @@ export default {
 			addAktie: user.addAktie,
 			removeAktie: user.removeAktie,
 			checkPassword: user.checkPassword,
+			updatePassword: user.updatePassword,
 		},
 	},
 };
