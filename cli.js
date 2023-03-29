@@ -43,6 +43,9 @@ async function main() {
 			case "getCheaters":
 				await getCheaters();
 				break;
+			case "userInfo":
+				await userInfo();
+				break;
 			case "help":
 				console.log(
 					"Commands:\n" +
@@ -51,6 +54,9 @@ async function main() {
 						"toggleAdmin: Toggles admin status\n" +
 						"resetPass: Resets a user's password\n" +
 						"start: Starts the server\n" +
+						"countAktier: Counts the amount of each aktie type\n" +
+						"getCheaters: Gets the users with more than 500 aktier\n" +
+						"userInfo: Gets info about a user\n" +
 						"help: Shows this message"
 				);
 				break;
@@ -110,15 +116,16 @@ async function updateAktier() {
 		}
 	}
 	let totalInflation = 0;
+	let creditCards = 0;
 
 	for (let i = 0; i < users.length; i++) {
 		let aktier = users[i].aktier;
+		let earned = 0;
 		for (let j = 0; j < aktier.length; j++) {
 			let aktie = aktier[j];
 			let aktieType = aktieTypes.find((type) => type.id == aktie.investedIn);
 			let oldAmount = aktie.amount;
 			calculateNewAmount(aktie, aktieType, totalIncome, totalInvested, method);
-
 			if (aktie.amount < 0) aktie.amount = 0;
 			if (aktie.amount > 500) {
 				console.warn("Aktie value too high, setting to 500");
@@ -126,10 +133,13 @@ async function updateAktier() {
 				console.warn(aktie);
 				throw new Error("Too much money");
 			}
+			earned += aktie.amount;
 			totalInflation += aktie.amount - oldAmount;
 		}
+		creditCards += Math.ceil(earned / 10);
 	}
 	console.log("Total inflation: " + totalInflation);
+	console.log("Total credit cards: " + creditCards);
 
 	//estimates
 	aktieTypes.forEach((aktieType) => {
@@ -152,6 +162,23 @@ async function updateAktier() {
 		);
 	});
 
+	//5 richest
+	let richest = users.sort((a, b) => {
+		return (
+			b.aktier.reduce((a, b) => a + b.amount, 0) -
+			a.aktier.reduce((a, b) => a + b.amount, 0)
+		);
+	});
+	console.log("Richest:");
+	for (let i = 0; i < 5; i++) {
+		console.log(
+			`${richest[i].username}: ${richest[i].aktier.reduce(
+				(a, b) => a + b.amount,
+				0
+			)}`
+		);
+	}
+
 	let confirm = await readLineAsync("Confirm? (y/n): ");
 	if (confirm != "y") {
 		updateAktier();
@@ -161,6 +188,14 @@ async function updateAktier() {
 	for (let i = 0; i < users.length; i++) {
 		await users[i].save();
 	}
+}
+
+async function userInfo() {
+	let username = await readLineAsync("Username: ");
+
+	let user = await User.model.findOne({ username });
+
+	console.log(user);
 }
 
 async function toggleAdmin() {
