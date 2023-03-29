@@ -75,14 +75,23 @@ export async function deleteStaff(req, res) {
 	}
 	res.sendStatus(403);
 }
-
+function escapeRegex(string) {
+	return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 export async function getUser(req, res) {
 	logger.debug(
 		`${req.session.username} (admin: ${req.session.admin}) GET /admin/user`
 	);
 	if (req.session.username && req.session.admin) {
 		let username = passwordManager.sanitizeUsername(req.query.username || "");
-		let user = await models.User.findOne({ username: username }).lean();
+		let user;
+		if (req.query.wildcard) {
+			user = await models.User.find({
+				username: { $regex: ".*" + escapeRegex(req.query.username) + ".*" },
+			}).lean();
+		} else {
+			user = await models.User.findOne({ username: username }).lean();
+		}
 
 		if (!user) {
 			res.status(400).send({ success: false, message: "User not found" });

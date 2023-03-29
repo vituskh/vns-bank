@@ -26,6 +26,8 @@
 		<h2>Get user</h2>
 		<form action="#" onsubmit="getUser(event, this); false">
 			<label for="username">Username: </label><input id="username" type="text">
+			<label for="wildcard">Wildcard: </label><input id="wildcard" type="checkbox">
+			<input type="submit" value="Find">
 		</form>
 
 		<h2>Update password</h2>
@@ -85,8 +87,10 @@
 			function getUser(e, form) {
 				e.preventDefault();
 				const username = form.username.value;
+				const wildcard = form.wildcard.value;
 				let url = new URL('/admin/api/user', window.location.origin);
 				url.searchParams.append('username', username);
+				url.searchParams.append('wildcard', wildcard);
 				fetch(url)
 					.then((res) => res.json())
 					.then((data) => {
