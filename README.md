@@ -1,4 +1,4 @@
 # vns-bank
-**Advarsel: fast-xml-parser har en kritisk sikkerhedsfejl og er ikke opdateret her i projektet. Brug på eget ansvar**
+**Archived pga kritiske sikkerhedsfejl i flere dependencies og at jeg ikke kommer til at opdatere det**
 
 Projekt til skole
